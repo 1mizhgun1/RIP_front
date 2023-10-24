@@ -1,0 +1,12 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+.head {
+  width: max-content;
+  height: max-content;
+  position: absolute;
+  left: 30px;
+  top: 30px;
+}

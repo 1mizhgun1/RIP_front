@@ -1,0 +1,9 @@
+.box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 75%;
+    position: relative;
+    top: 200px;
+    left: 25%;
+    height: max-content;
+}

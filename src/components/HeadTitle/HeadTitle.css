@@ -1,0 +1,25 @@
+.headTitleWrap {
+    display: flex;
+}
+
+.headTitle {
+    position: relative;
+    font-size: 36px;
+    font-weight: bold;
+    color: rgb(68, 183, 42);
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.headSubtitle {
+    position: relative;
+    left: -208px;
+    top: 40px;
+    font-size: 14px;
+    font-weight: 300;
+    color: black;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
