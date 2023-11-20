@@ -9,6 +9,7 @@ import ProductListPage from './pages/ProductList/ProductList'
 import ProductPage from './pages/Product/Product'
 
 import "./main.css"
+import { getBase } from '../path_config.ts';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -19,11 +20,11 @@ const router = createBrowserRouter([
     //     element: <MainPage />
     // },
     {
-        path: '/',
+        path: `${getBase()}/`,
         element: <ProductListPage />
     },
     {
-        path: '/products/:id',
+        path: `${getBase()}/products/:id/`,
         element: <ProductPage />
     }
 ])
