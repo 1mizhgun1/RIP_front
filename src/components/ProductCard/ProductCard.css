@@ -1,5 +1,4 @@
 .card {
-    position: relative;
     width: 300px;
     height: 450px;
     border: groove 1px rgb(216, 216, 216);
@@ -29,6 +28,10 @@
     top: -40px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.cardTitleWrap > a {
+    text-decoration: none;
 }
 
 .cardTitle {

@@ -3,16 +3,24 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import HeadTitle from './components/HeadTitle/HeadTitle'
-import MainPage from './pages/ProductList/ProductList'
+import Navbar from './components/Navbar/Navbar'
+// import MainPage from './pages/MainPage/MainPage';
+import ProductListPage from './pages/ProductList/ProductList'
 import ProductPage from './pages/Product/Product'
 
 import "./main.css"
-import Navigation from './components/Navbar/Navbar';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 
 const router = createBrowserRouter([
+    // {
+    //     path: '/',
+    //     element: <MainPage />
+    // },
     {
         path: '/',
-        element: <MainPage />
+        element: <ProductListPage />
     },
     {
         path: '/products/:id',
@@ -22,10 +30,14 @@ const router = createBrowserRouter([
   
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <div className="head">
-            <HeadTitle />
-            <Navigation />
-        </div>
-        <RouterProvider router={router} />
+        <Container>
+            <Row id="header">
+                <HeadTitle />
+                <Navbar />
+            </Row>
+            <Row>
+                <RouterProvider router={router} />
+            </Row>
+        </Container>
     </React.StrictMode>,
 )

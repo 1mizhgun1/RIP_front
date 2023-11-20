@@ -15,12 +15,13 @@ interface Props {
     image: string
 }
 
+// "data:image/jpeg;base64,"+
 const ProductInfo: FC<Props> = ({pk, title, price, cnt, parameters, image}) => (
     <div className="product">
         <div className="product-info" key={pk.toString()}>
             <h4 className="product-title">{title}</h4>
             <div className="product-image-wrap">
-                <img src={"data:image/jpeg;base64,"+image} alt="картинка" className="product-image" />
+                <img src={image} alt="картинка" className="product-image" />
             </div>
             <input type="radio" name="radio" id="product-params" defaultChecked />
             <input type="radio" name="radio" id="product-reviews" />

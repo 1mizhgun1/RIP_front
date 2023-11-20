@@ -2,6 +2,10 @@ import { FC } from 'react'
 import { useState } from 'react';
 import './Filter.css'
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 export interface Prices {
     priceMin: Number,
     priceMax: Number,
@@ -9,30 +13,51 @@ export interface Prices {
     priceMaxAbsolute: Number
 }
 
-export const Filter: FC<Prices> = ({ priceMin, priceMax, priceMinAbsolute, priceMaxAbsolute }) => {
-    const [inputPriceMin, setInputPriceMin] = useState(priceMin.toString());
-    const [inputPriceMax, setInputPriceMax] = useState(priceMax.toString());
+interface FilterData {
+    prices: Prices,
+    title: string
+}
+
+export const Filter: FC<FilterData> = ({ prices, title }) => {
+    const [inputPriceMin, setInputPriceMin] = useState(prices.priceMin.toString());
+    const [inputPriceMax, setInputPriceMax] = useState(prices.priceMax.toString());
+    const [inputTitle, setInputTitle] = useState(title);
 
     return (
-        <div id="filter">
-            <h4 id="filter-title">Фильтр</h4>
-            <h4 id="filter-text">Подбор по параметрам</h4>
-            <div id="filter-price">
-                <h4 id="filter-price-text">Розничная цена</h4>
-                <form action="" method="get" className="filter-price-form">
-                    <h4 id="filter-price-text-1">от</h4>
-                    <h4 id="filter-price-text-2">до</h4>
-                    { priceMin == priceMinAbsolute ?
-                        <input id="filter-input-price-min" name="price_min" type="text" size={7} placeholder={priceMin.toString()} /> :
-                        <input id="filter-input-price-min" name="price_min" type="text" size={7} value={inputPriceMin} onChange={(e) => setInputPriceMin(e.target.value)} />
-                    }
-                    { priceMax == priceMaxAbsolute ?
-                        <input id="filter-input-price-max" name="price_max" type="text" size={7} placeholder={priceMax.toString()} /> :
-                        <input id="filter-input-price-max" name="price_max" type="text" size={7} value={inputPriceMax} onChange={(e) => setInputPriceMax(e.target.value)} />
-                    }
-                    <input id="filter-price-submit" type="submit" value="применить" />
-                </form>
-            </div>
-        </div>
+        <Container id="filter">
+            <Row><h3 className="filter-title">Фильтр</h3></Row>
+            <Row><h3 className="filter-subtitle">Подбор по параметрам</h3></Row>
+            <form action="" method="get" id="filter-form">
+                
+                <Container style={{ transform: "translateY(-30%)", paddingLeft: "20px", borderBottom: "solid 1px #9e9b9b" }}>
+                    <Row><h4 className="filter-text">Розничная цена</h4></Row>
+                    <Row style={{ display: "flex" }}>
+                        <Col><h4 className="filter-text up">от</h4></Col>
+                        <Col>
+                            { prices.priceMin == prices.priceMinAbsolute ?
+                            <input className="filter-input" name="price_min" type="text" size={10} placeholder={prices.priceMin.toString()} /> :
+                            <input className="filter-input" name="price_min" type="text" size={10} value={inputPriceMin} onChange={(e) => setInputPriceMin(e.target.value)} />
+                            }
+                        </Col>
+                        <Col><h4 className="filter-text up">до</h4></Col>
+                        <Col>
+                            { prices.priceMax == prices.priceMaxAbsolute ?
+                            <input className="filter-input" name="price_max" type="text" size={10} placeholder={prices.priceMax.toString()} /> :
+                            <input className="filter-input" name="price_max" type="text" size={10} value={inputPriceMax} onChange={(e) => setInputPriceMax(e.target.value)} />
+                            }
+                        </Col>
+                    </Row>
+                </Container>
+
+                <Container style={{ transform: "translateY(-40%)", paddingBottom: "20px", paddingLeft: "20px", borderBottom: "solid 1px #9e9b9b" }}>
+                    <Row><h4 className="filter-text">Наименование</h4></Row>
+                    <Row style={{ display: "flex", transform: "translateY(-20%)" }}>
+                        <input className="filter-input" name="title" type="text" size={30} placeholder="Введите название" value={inputTitle} onChange={(e) => setInputTitle(e.target.value)} />
+                    </Row>
+                </Container>
+
+                <Row><input className="filter-submit" type="submit" value="применить" /></Row>
+            </form>
+        </Container>
     )
 }
