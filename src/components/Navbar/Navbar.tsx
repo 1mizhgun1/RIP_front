@@ -7,10 +7,10 @@ const Navbar: FC = () => {
         <Container style={{ paddingLeft: "30px", width: "200%", backgroundColor: "antiquewhite" }}>
             <Row style={{ display: "flex" }}>
                 <Col style={{ width: "70%", margin: "30px" }}>
-                    ну тут это короче navbar будет наверное
+                    example text
                 </Col>
                 <Col style={{ width: "30%", margin: "30px" }}>
-                    а тут ещё юзерблок будет мб
+                    example text 2
                 </Col>
             </Row>
         </Container>
