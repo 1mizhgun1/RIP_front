@@ -37,6 +37,9 @@ export const getProductList = async (priceMin: number, priceMax: number, type: s
         for (let i = 1; i <= 3; ++i) {
             result.push(defaultProduct(i))
         }
+        result = result.filter((product) => {
+            return product.price >= priceMin && product.price <= priceMax && (type == '' || product.type == type) && (title == '' || product.title.toLowerCase().includes(title.toLowerCase()))
+        })
         return result
     }
     
