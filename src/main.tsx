@@ -1,12 +1,14 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import store from "./modules/store";
+import { Provider } from "react-redux";
 
 import HeadTitle from './components/HeadTitle/HeadTitle'
 import Navbar from './components/Navbar/Navbar'
 // import MainPage from './pages/MainPage/MainPage';
 import ProductListPage from './pages/ProductList/ProductList'
 import ProductPage from './pages/Product/Product'
+import Cart from './pages/Cart/Cart.tsx';
 
 import "./main.css"
 import { getBase } from '../path_config.ts';
@@ -26,11 +28,15 @@ const router = createBrowserRouter([
     {
         path: `${getBase()}/products/:id/`,
         element: <ProductPage />
-    }
+    },
+    {
+        path: `${getBase()}/cart/`,
+        element: <Cart />
+    },
 ])
   
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+    <Provider store={ store } >
         <Container>
             <Row id="header">
                 <HeadTitle />
@@ -40,5 +46,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <RouterProvider router={router} />
             </Row>
         </Container>
-    </React.StrictMode>,
+    </Provider>
 )

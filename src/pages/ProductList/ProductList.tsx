@@ -10,15 +10,11 @@ import { Container } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-// TODO
-// 5. Navbar из списка базовых страниц
-// 7. Развернуть фронтенд на Github Pages
-// 8. ТЗ
 
 const ProductListPage: FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [prices, setPrices] = useState<Prices>();
-    const [type, setType] = useState<string>('');
+    // const [type, setType] = useState<string>('');
 
     const location = useLocation();
     const request = new URLSearchParams(location.search);
@@ -27,14 +23,14 @@ const ProductListPage: FC = () => {
     const requestPriceMax = request.get('price_max');
     const requestTitle = request.get('title');
 
-    const requestType = request.get('type');
+    // const requestType = request.get('type');
 
     const title = (requestTitle ? requestTitle : '');
 
     useEffect(() => {
-        requestType && setType(requestType);
+        // requestType && setType(requestType);
 
-        getPrices(type)
+        getPrices('')
         .then((response) => {
             const minValueAbsolute = response.price_min;
             const maxValueAbsolute = (response.price_max == 10000000000 ? 0 : response.price_max);
@@ -47,12 +43,12 @@ const ProductListPage: FC = () => {
                 priceMaxAbsolute: maxValueAbsolute
             });
             
-            getProductList(minValue, maxValue, type, title)
+            getProductList(minValue, maxValue, '', title)
             .then((response) => {
                 setProducts(response);
             });
         })
-    }, [type]);
+    }, []);
 
     return (
         <Container>
