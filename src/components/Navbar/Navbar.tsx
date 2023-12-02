@@ -1,28 +1,28 @@
 import { FC } from 'react'
-import { Container, Row } from 'react-bootstrap'
+import { Col, Container, Row } from 'react-bootstrap'
 import "./Navbar.css"
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+// import { useAuth } from '../../hooks/useAuth';
+// import { useEffect } from 'react';
 
 const Navbar: FC = () => {
-    const { is_authenticated, username, auth } = useAuth()
+    // const { is_authenticated, username, auth } = useAuth()
 
-    useEffect(() => {
-        auth()
-    }, []);
+    // useEffect(() => {
+    //     auth()
+    // }, []);
 
     return (
         <Container style={{ paddingLeft: "30px", width: "200%", backgroundColor: "antiquewhite" }}>
             <Row style={{ display: "flex" }}>
-                {/* <Col style={{ width: "70%", margin: "30px" }}>
+                <Col style={{ width: "70%", margin: "30px" }}>
                     example text
                 </Col>
                 <Col style={{ width: "30%", margin: "30px" }}>
                     example text 2
-                </Col> */}
+                </Col>
 
-                <Link to={ `/` }>
+                {/* <Link to={ `/` }>
                     <li><a href="#">Штрафы</a></li>
                 </Link>
 
@@ -40,7 +40,7 @@ const Navbar: FC = () => {
                     <Link to={ `/profile` }>
                         <li><a href="#">{ username }</a></li>
                     </Link>
-                }      
+                }       */}
             </Row>
         </Container>
     )

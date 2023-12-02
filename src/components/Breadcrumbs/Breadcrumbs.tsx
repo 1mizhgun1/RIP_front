@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import './Breadcrumbs.css';
 import { Container, Row } from 'react-bootstrap';
-import { getBase } from '../../../path_config.ts';
 
 interface BreadcrumbsProps {
     link: string,
@@ -11,9 +10,9 @@ interface BreadcrumbsProps {
 const Breadcrumbs: FC<{ pages: BreadcrumbsProps[] }> = ({ pages }) =>  (
     <Container id="breadcrumbs">
         <Row>
-            <a href={`${getBase()}/`} style={{ textDecoration: "None" }}>🏠</a>
+            <a href='/' style={{ textDecoration: "None", color: "rgb(24, 125, 188)" }}>🏠 главная</a>
             {pages && pages.map((page) => (
-                <a href={ page.link } style={{ textDecoration: "None" }}>{ " --> " + page.title }</a>
+                <a href={ page.link } style={{ textDecoration: "None", color: "rgb(24, 125, 188)" }}>{ ` >>> ${page.title}` }</a>
             ))}
         </Row>
     </Container>

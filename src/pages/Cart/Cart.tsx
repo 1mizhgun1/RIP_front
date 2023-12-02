@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { useCart, useCartSum } from "../../modules/cartSlice";
+import { useCart, useCartSum } from "../../store/cartSlice";
 // import { useDispatch } from "react-redux";
 
 import { Container } from 'react-bootstrap';

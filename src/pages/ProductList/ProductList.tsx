@@ -1,54 +1,77 @@
-import { FC, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
-import { Product, getProductList, getPrices } from '../../modules/getDataFromAPI'
-import ProductCard from '../../components/ProductCard/ProductCard';
-import { Prices, Filter }  from '../../components/Filter/Filter';
-import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import "./ProductList.css"
+import { useState, useEffect } from 'react';
+import { useSsid } from "../../hooks/useSsid";
 
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import axios from "axios";
+import { getDefaultResponse } from '../../assets/MockObjects.ts';
+
+import ProductCard from "../../components/ProductCard/ProductCard.tsx";
+import Filter from '../../components/Filter/Filter.tsx';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.tsx';
+// import BreachBasket from "../../components/BreachBasket/BreachBasket";
+
+import { Col, Container, Row } from 'react-bootstrap';
+import "./ProductList.css";
 
 
-const ProductListPage: FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [prices, setPrices] = useState<Prices>();
-    // const [type, setType] = useState<string>('');
+export interface Product {
+    pk: number,
+    title: string,
+    file_extension: 'jpg' | 'png',
+    price: number,
+    cnt: number,
+    status: 'A' | 'N',
+    type: 'frames' | 'sunglasses' | 'lenses',
+    param_sex?: string,
+    param_material?: string,
+    param_type?: string,
+    param_color?: string,
+    param_form?: string,
+    param_time?: string,
+    param_brand: string,
+    last_modified: string,
+    image: string
+}
 
-    const location = useLocation();
-    const request = new URLSearchParams(location.search);
+interface Response {
+    orderID: number,
+    products: Product[]
+}
 
-    const requestPriceMin = request.get('price_min');
-    const requestPriceMax = request.get('price_max');
-    const requestTitle = request.get('title');
+const Fines = () => {
+    const [ response, setResponse ] = useState<Response> ({
+        orderID: -1,
+        products: [],
+    })
 
-    // const requestType = request.get('type');
+    const [ searchValue, setSearchValue ] = useState<string> ("")
+    const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> ()
+    const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> ()
 
-    const title = (requestTitle ? requestTitle : '');
+    const { session_id } = useSsid()
+
+    const getFilteredProducts = async () => {
+        try {
+            const { data } = await axios(`http://127.0.0.1:8080/products/`, {
+                method: "GET",
+                headers: {
+                    'authorization': session_id
+                },
+                params: {
+                    title: searchValue,
+                    price_min: minPriceValue,
+                    price_max: maxPriceValue
+                }
+            })
+            setResponse(data)
+        } catch (error) {
+            setResponse(getDefaultResponse(3, searchValue, minPriceValue, maxPriceValue))
+        }
+        
+    }
 
     useEffect(() => {
-        // requestType && setType(requestType);
-
-        getPrices('')
-        .then((response) => {
-            const minValueAbsolute = response.price_min;
-            const maxValueAbsolute = (response.price_max == 10000000000 ? 0 : response.price_max);
-            const minValue = (requestPriceMin ? parseInt(requestPriceMin) : minValueAbsolute);
-            const maxValue = (requestPriceMax ? parseInt(requestPriceMax) : maxValueAbsolute);
-            setPrices({
-                priceMin: minValue,
-                priceMax: maxValue,
-                priceMinAbsolute: minValueAbsolute,
-                priceMaxAbsolute: maxValueAbsolute
-            });
-            
-            getProductList(minValue, maxValue, '', title)
-            .then((response) => {
-                setProducts(response);
-            });
-        })
-    }, []);
+        getFilteredProducts()
+    }, [searchValue, minPriceValue, maxPriceValue])
 
     return (
         <Container>
@@ -57,15 +80,18 @@ const ProductListPage: FC = () => {
             </Row>
             <Row style={{ display: "flex" }}>
                 <Col style={{ width: "22%", margin: "30px" }}>
-                    {prices &&
                     <Filter
-                        prices={prices}
-                        title={title}
-                    />}
+                        search={searchValue}
+                        setSearch={setSearchValue}
+                        minPrice={minPriceValue}
+                        setMinPrice={setMinPriceValue}
+                        maxPrice={maxPriceValue}
+                        setMaxPrice={setMaxPriceValue}
+                    />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
                     <div id="box">
-                        {products && products.map((product) => (
+                        {response.products.map((product) => (
                             <ProductCard key={product.pk.toString()}
                                 pk={product.pk}
                                 title={product.title}
@@ -77,7 +103,29 @@ const ProductListPage: FC = () => {
                 </Col>
             </Row>
         </Container>
-    );
+    )
+
+    // return (
+    //     <div className="fines-wrapper">
+
+    //         <div className="top-container">
+
+    //             <div className='search_in_menu'>
+    //                 <SearchFines title={titleData} setTitle={setTitlePage}/>
+    //             </div>
+
+    //             <BreachBasket />
+
+    //         </div>
+
+    //         <div className="bottom-container">
+    //             {fines.fines.map((fine) => {
+    //                 return <FineCard fine={fine} key={fine.id}/>
+    //             })}
+    //         </div>
+
+    //     </div>
+    // )
 }
 
-export default ProductListPage
+export default Fines;

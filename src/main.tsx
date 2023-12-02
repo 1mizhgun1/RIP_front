@@ -1,60 +1,54 @@
-import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import store from "./modules/store";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "react-redux";
 
-import HeadTitle from './components/HeadTitle/HeadTitle'
-import Navbar from './components/Navbar/Navbar'
-// import MainPage from './pages/MainPage/MainPage';
-import ProductListPage from './pages/ProductList/ProductList'
-import ProductPage from './pages/Product/Product'
-import Cart from './pages/Cart/Cart.tsx';
-import LoginPage from "./pages/LoginPage/LoginPage";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import ProductListPage from "./pages/ProductList/ProductList.tsx";
+import ProductPage from "./pages/Product/Product.tsx";
+// import OrderListPage from "./pages/OrderListPage/OrderListPage.tsx";
+// import CartPage from "./pages/CartPage/CartPage";
+// import LoginPage from "./pages/LoginPage/LoginPage.tsx";
+// import ProfilePage from "./pages/ProfilePage/ProfilePage.tsx";
 
-import "./main.css"
-import { getBase } from '../path_config.ts';
+import HeadTitle from "./components/HeadTitle/HeadTitle.tsx";
+import Navbar from "./components/Navbar/Navbar.tsx";
+// import Breadcrumbs from "./components/Breadcrumbs/Breadcrumbs";
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
+import store from "./store/store.ts";
 
-const router = createBrowserRouter([
-    // {
-    //     path: '/',
-    //     element: <MainPage />
-    // },
-    {
-        path: `${getBase()}/`,
-        element: <ProductListPage />
-    },
-    {
-        path: `${getBase()}/products/:id/`,
-        element: <ProductPage />
-    },
-    {
-        path: `${getBase()}/cart/`,
-        element: <Cart />
-    },
-    {
-        path: `${getBase()}/login/`,
-        element: <LoginPage />
-    },
-    {
-        path: `${getBase()}/profile/`,
-        element: <ProfilePage />
-    },
-])
-  
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <Provider store={ store } >
-        <Container>
-            <Row id="header">
-                <HeadTitle />
-                <Navbar />
-            </Row>
-            <Row>
-                <RouterProvider router={router} />
-            </Row>
-        </Container>
-    </Provider>
-)
+import { Container, Row } from "react-bootstrap";
+import "./main.css";
+
+
+const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+);
+
+const queryClient = new QueryClient();
+
+root.render(
+    <QueryClientProvider client={ queryClient }>
+        <Provider store={ store }>
+            <BrowserRouter>
+                <Container>
+                    <Row id="header">
+                        <HeadTitle />
+                        <Navbar />
+                    </Row>
+                    <Row>
+                        {/* <Breadcrumbs /> */}
+                        <Routes>
+                            <Route path="/"             element={ <Navigate to="/products" replace /> } />
+                            <Route path="products/"     element={ <ProductListPage /> } />
+                            <Route path="products/:id"  element={ <ProductPage /> } />
+                            {/* <Route path="cart/" element={<Breaches/>}/>
+                            <Route path="orders/draft/" element={<BreachPage/>}/>
+                            <Route path="login/" element={<LoginPage/>}/>
+                            <Route path="profile/" element={<ProfilePage/>}/> */}
+                        </Routes>
+                    </Row>
+                </Container>
+            </BrowserRouter>
+        </Provider>
+    </QueryClientProvider>
+);
