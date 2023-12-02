@@ -9,6 +9,8 @@ import Navbar from './components/Navbar/Navbar'
 import ProductListPage from './pages/ProductList/ProductList'
 import ProductPage from './pages/Product/Product'
 import Cart from './pages/Cart/Cart.tsx';
+import LoginPage from "./pages/LoginPage/LoginPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 
 import "./main.css"
 import { getBase } from '../path_config.ts';
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
     {
         path: `${getBase()}/cart/`,
         element: <Cart />
+    },
+    {
+        path: `${getBase()}/login/`,
+        element: <LoginPage />
+    },
+    {
+        path: `${getBase()}/profile/`,
+        element: <ProfilePage />
     },
 ])
   
