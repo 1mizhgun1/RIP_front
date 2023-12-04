@@ -24,9 +24,8 @@ const Filter: FC<FilterData> = ({ search, setSearch, minPrice, setMinPrice, maxP
                     <Row style={{ display: "flex" }}>
                         <Col><h4 className="filter-text up">от</h4></Col>
                         <Col>
-                            <input className="filter-input"
-                                type="text"
-                                size={10}
+                            <input className="filter-input" style={{ width: "80%" }}
+                                type="number"
                                 placeholder="мин. цена"
                                 name="price_min"
                                 value={minPrice}
@@ -35,9 +34,8 @@ const Filter: FC<FilterData> = ({ search, setSearch, minPrice, setMinPrice, maxP
                         </Col>
                         <Col><h4 className="filter-text up">до</h4></Col>
                         <Col>
-                            <input className="filter-input"
-                                type="text"
-                                size={10}
+                            <input className="filter-input" style={{ width: "80%" }}
+                                type="number"
                                 placeholder="макс. цена"
                                 name="price_max"
                                 value={maxPrice}

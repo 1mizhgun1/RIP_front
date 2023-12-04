@@ -2,12 +2,12 @@ import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSsid } from "../../hooks/useSsid";
 
-import { Product } from '../../pages/ProductList/ProductList'
+import { Product } from '../ProductListPage/ProductListPage'
 import ProductInfo, { Param } from '../../components/ProductInfo/ProductInfo'
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 
 import { Container, Row } from 'react-bootstrap';
-import "./Product.css"
+import "./ProductPage.css"
 
 import axios from "axios";
 
@@ -15,8 +15,8 @@ import axios from "axios";
 const ProductPage: FC = () => {
     const { id } = useParams();
 
-    const [product, setProduct] = useState<Product>();
-    const [parameters, setParameters] = useState<Param[]>([]);
+    const [ product, setProduct ] = useState<Product>();
+    const [ parameters, setParameters ] = useState<Param[]>([]);
 
     const { session_id } = useSsid()
 
@@ -50,10 +50,10 @@ const ProductPage: FC = () => {
     return (
         <Container>
             <Row>
-                {id && product && <Breadcrumbs pages={[ { link: `/products/${id}/`, title: `${product.title}` } ]} />}
+                {product && id && <Breadcrumbs pages={[ { link: `/products/${id}/`, title: `${product.title}` } ]} />}
             </Row>
             <Row>
-                {product && parameters && id && <ProductInfo pk={parseInt(id)} title={product.title} price={product.price} cnt={product.cnt} parameters={parameters} image={product.image} />}
+                {product && id && <ProductInfo pk={parseInt(id)} title={product.title} price={product.price} cnt={product.cnt} parameters={parameters} image={product.image} />}
             </Row>
         </Container>
     )

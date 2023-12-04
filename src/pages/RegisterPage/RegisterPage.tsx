@@ -1,49 +1,38 @@
-import { FC, useEffect } from "react"
+import { FC } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs"
 
 import { Container, Row, Col } from "react-bootstrap"
-import "./LoginPage.css"
+import "./RegisterPage.css"
 
 
-const LoginPage: FC = () => {
-    const { login, auth } = useAuth()
+const RegisterPage: FC = () => {
+    const { register } = useAuth()
     const navigate = useNavigate()
 
-    const handleLogin = async (e: any) => {
+    const handleRegister = async (e: any) => {
         e.preventDefault()
         const formData = new FormData(e.target as HTMLFormElement)
-        const flag = await login(formData)
-        if (flag) {
-            navigate("/products")
+        const response = await register(formData)
+        if (response.status == 200) {
+            navigate("/login")
         }
     }
-
-    const handleAuth  = async () => {
-        const flag = await auth()
-        if (flag) {
-            navigate("/products")
-        }
-    }
-
-    useEffect(() => {
-        handleAuth()
-    }, []);
 
     return (
         <Container>
             <Row>
-                {<Breadcrumbs pages={[ { link: `/login/`, title: "вход" } ]} />}
+                {<Breadcrumbs pages={[ { link: `/register/`, title: "регистрация" } ]} />}
             </Row>
             <Row>
                 <Container style={{ marginLeft: "30px", marginTop: "30px" }}>
                     <Row style={{ display: "flex" }}>
-                        <h1 style={{ fontSize: "36px", fontWeight: "500" }}>Вход в аккаунт</h1>
-                        <a href="/register" className="form-link"><h3>Регистрация</h3></a>
+                        <h1 style={{ fontSize: "36px", fontWeight: "500" }}>Регистрация</h1>
+                        <a href="/register" className="form-link"><h3>Вход в аккаунт</h3></a>
                     </Row>
-                    <form onSubmit={ handleLogin } id="login-form" style={{ marginTop: "30px" }}>
+                    <form onSubmit={ handleRegister } id="login-form" style={{ marginTop: "30px" }}>
                         <Row>
                             <Col className="left-col">
                                 <h3>Имя пользователя</h3>
@@ -63,7 +52,7 @@ const LoginPage: FC = () => {
                         <Row>
                             <Col className="left-col"></Col>
                             <Col className="right-col">
-                                <button id="login-button" className="EntButton" type="submit">Войти!</button>
+                                <button id="register-button" className="EntButton" type="submit">Зарегистироваться!</button>
                             </Col>
                         </Row>
                     </form>
@@ -73,4 +62,4 @@ const LoginPage: FC = () => {
     )
 }
 
-export default LoginPage;
+export default RegisterPage;

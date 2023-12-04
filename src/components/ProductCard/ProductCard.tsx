@@ -4,12 +4,12 @@ import { Card } from 'react-bootstrap';
 import './ProductCard.css';
 
 
-interface ProductCardData {
-    pk: Number,
+export interface ProductCardData {
+    pk: number,
     title: string,
-    price: Number,
+    price: number,
     image: string,
-    cnt: Number
+    cnt: number
 }
 
 const ProductCard: FC<ProductCardData> = ({ pk, title, price, image, cnt }) => (

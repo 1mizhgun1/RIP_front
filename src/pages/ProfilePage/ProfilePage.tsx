@@ -1,22 +1,32 @@
-// import { useNavigate } from "react-router-dom"
-// import { useAuth } from "../../hooks/useAuth"
+import { FC } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../hooks/useAuth"
 
-// const ProfilePage = () => {
-//     const navigate = useNavigate()
-//     const { logOut, username } = useAuth()
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs"
 
-//     const handleLogOut = async () => {
-//         await logOut()
-//         navigate("/")
-//     }
+import { Container, Row } from "react-bootstrap"
+import "./ProfilePage.css"
 
-//     return (
-//         <div>
-//             <h3>Профиль</h3>
-//             <span>{ username }</span>
-//             <button onClick={ handleLogOut }>Съебаться в ужасе нахуй</button>
-//         </div>
-//     )
-// }
+const ProfilePage: FC = () => {
+    const navigate = useNavigate()
+    const { logout, username } = useAuth()
 
-// export default ProfilePage
+    const handleLogout = async () => {
+        await logout()
+        navigate("/products")
+    }
+
+    return (
+        <Container>
+            <Row>
+                {<Breadcrumbs pages={[ { link: `/profile/`, title: `профиль ${username}` } ]} />}
+            </Row>
+            <Row style={{ marginLeft: "30px", marginTop: "40px" }}>
+                <h1 style={{ fontWeight: "500" }}>{ `Профиль: ${ username }`}</h1>
+                <button id="logout-button" onClick={ handleLogout }>Выйти</button>
+            </Row>
+        </Container>
+    )
+}
+
+export default ProfilePage
