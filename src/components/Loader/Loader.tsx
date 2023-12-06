@@ -11,7 +11,7 @@ export const EmptyLoader: FC = () => {
 const Loader: FC = () => {
     return (
         <Container>
-            ХУЙ
+            ...
         </Container>
     )
 }
