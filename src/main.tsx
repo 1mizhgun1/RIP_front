@@ -11,7 +11,6 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage.tsx";
 import OrderListPage from "./pages/OrderListPage/OrderListPage.tsx";
 import OrderPage from "./pages/OrderPage/OrderPage.tsx";
 
-import HeadTitle from "./components/HeadTitle/HeadTitle.tsx";
 import Navbar from "./components/Navbar/Navbar.tsx";
 
 import store from "./store/store.ts";
@@ -31,10 +30,7 @@ root.render(
         <Provider store={ store }>
             <BrowserRouter>
                 <Container>
-                    <Row id="header">
-                        <HeadTitle />
-                        <Navbar />
-                    </Row>
+                    <Navbar />
                     <Row>
                         {/* <Breadcrumbs /> */}
                         <Routes>

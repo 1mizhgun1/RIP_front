@@ -9,7 +9,7 @@ import { getDefaultResponse } from '../../assets/MockObjects.ts';
 import ProductCard from "../../components/ProductCard/ProductCard.tsx";
 import Filter from '../../components/Filter/Filter.tsx';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.tsx';
-// import BreachBasket from "../../components/BreachBasket/BreachBasket";
+import Loader from '../../components/Loader/Loader.tsx';
 
 import { Col, Container, Row } from 'react-bootstrap';
 import "./ProductListPage.css";
@@ -40,6 +40,8 @@ interface Response {
 }
 
 const ProductListPage: FC = () => {
+    const [ loading, setLoading ] = useState<boolean> (true)
+
     const [ response, setResponse ] = useState<Response> ({
         orderID: -1,
         products: [],
@@ -78,10 +80,16 @@ const ProductListPage: FC = () => {
     }
 
     useEffect(() => {
-        getFilteredProducts()
+        getFilteredProducts().then(() => {
+            setLoading(false)
+        }).catch((error) => {
+            console.log(error)
+            setLoading(false)
+        })
     }, [searchValue, minPriceValue, maxPriceValue])
 
     return (
+        <> {loading ? <Loader /> :
         <Container>
             <Row>
                 <Breadcrumbs pages={[]} />
@@ -124,6 +132,7 @@ const ProductListPage: FC = () => {
                 </Col>
             </Row>
         </Container>
+        }</>
     )
 }
 

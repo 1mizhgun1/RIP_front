@@ -7,6 +7,7 @@ import { useSsid } from '../../hooks/useSsid';
 
 import ProductCardWithCount, { ProductCardData } from "../../components/ProductCardWithCount/ProductCardWithCount";
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
+import Loader from '../../components/Loader/Loader.tsx';
 
 import axios from 'axios';
 
@@ -31,6 +32,7 @@ interface Response {
 }
 
 const OrderPage: FC = () => {
+    const [ loading, setLoading ] = useState<boolean> (true)
     const navigate = useNavigate()
     const { id } = useParams()
     const { session_id } = useSsid()
@@ -58,16 +60,23 @@ const OrderPage: FC = () => {
 
     useEffect(() => {
         if (!id) {
-            getCartData()
+            getCartData().then(() => {
+                setLoading(false)
+            }).catch((error) => {
+                console.log(error)
+                setLoading(false)
+            })
         } else {
-            getOrderProducts()
-            // if (response && response.status == 'I') {
-            //     navigate('/cart')
-            // }
+            getOrderProducts().then(() => {
+                setLoading(false)
+            }).catch((error) => {
+                console.log(error)
+                setLoading(false)
+            })
         }
     }, [])
 
-    if (!id && !is_authenticated) {
+    if (!id && !is_authenticated && !loading) {
         return (
             <Container style={{ marginLeft: "30px" }}>
                 <h1 className="cart-help-text">Войдите в аккаунт, чтобы использовать корзину</h1>
@@ -75,20 +84,24 @@ const OrderPage: FC = () => {
         )
     }
 
-    if (!id && cart == undefined) {
-        return (
-            <Container style={{ marginLeft: "30px" }}>
-                <h1 className="cart-help-text">Ваша корзина пуста</h1>
-            </Container>
-        )
+    if (!id && cart == undefined && !loading) {
+        navigate('/products')
+        return
+        // return (
+        //     <Container style={{ marginLeft: "30px" }}>
+        //         <h1 className="cart-help-text">Ваша корзина пуста</h1>
+        //     </Container>
+        // )
     }
 
     const handleSendCart = async () => {
         await sendCart()
+        navigate('/orders')
     }
 
     const handleDeleteCart = async () => {
         await deleteCart()
+        navigate('/products')
     }
 
     const handleDeleteFromCart = async (id: number) => {
@@ -119,6 +132,7 @@ const OrderPage: FC = () => {
     }
 
     return (
+        <> {loading ? <Loader /> :
         <Container>
             <Row>
                 {!id ? <Breadcrumbs pages={[ { link: `/orders/`, title: `мои заказы` }, { link: `/cart/`, title: `корзина` } ]} /> :
@@ -153,6 +167,7 @@ const OrderPage: FC = () => {
                 </Row>
             </Container>
         </Container>
+        }</>
     )
 }
 

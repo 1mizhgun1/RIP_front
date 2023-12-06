@@ -31,7 +31,7 @@ const OrderTable: FC<Props> = ({ orders }) => {
         <Container id="order-table" style={{ marginTop: "20px", marginBottom: "50px", width: "86%", position: "relative", left: "7%" }}>
             <Row className="order-table-header" style={{ display: "flex", padding: "15px" }}>
                 <Col className="order-table-head" style={{ width: "25%" }}><h2>Номер</h2></Col>
-                <Col className="order-table-head" style={{ width: "25%" }}><h2>Дата отправки</h2></Col>
+                <Col className="order-table-head" style={{ width: "25%" }}><h2>Дата и время отправки</h2></Col>
                 <Col className="order-table-head" style={{ width: "25%" }}><h2>Статус</h2></Col>
                 <Col className="order-table-head" style={{ width: "25%" }}><h2>Ссылка</h2></Col>
             </Row>

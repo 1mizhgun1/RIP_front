@@ -1,14 +1,16 @@
-import { FC, useEffect } from "react"
+import { FC, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs"
+import Loader from '../../components/Loader/Loader.tsx';
 
 import { Container, Row, Col } from "react-bootstrap"
 import "./LoginPage.css"
 
 
 const LoginPage: FC = () => {
+    const [ loading, setLoading ] = useState<boolean> (true)
     const { login, auth } = useAuth()
     const navigate = useNavigate()
 
@@ -29,10 +31,16 @@ const LoginPage: FC = () => {
     }
 
     useEffect(() => {
-        handleAuth()
+        handleAuth().then(() => {
+            setLoading(false)
+        }).catch((error) => {
+            console.log(error)
+            setLoading(false)
+        })
     }, []);
 
     return (
+        <> {loading ? <Loader /> :
         <Container>
             <Row>
                 {<Breadcrumbs pages={[ { link: `/login/`, title: "вход" } ]} />}
@@ -70,6 +78,7 @@ const LoginPage: FC = () => {
                 </Container>
             </Row>
         </Container>
+        }</>
     )
 }
 
