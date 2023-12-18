@@ -1,87 +1,115 @@
-import { FC, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
-import { Product, getProductList, getPrices } from '../../modules/getDataFromAPI'
-import ProductCard from '../../components/ProductCard/ProductCard';
-import { Prices, Filter }  from '../../components/Filter/Filter';
-import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import "./ProductList.css"
+import { FC, useState, useEffect } from 'react';
 
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import axios from "axios";
+import { getDefaultResponse } from '../../assets/MockObjects.ts';
 
-// TODO
-// 5. Navbar из списка базовых страниц
-// 7. Развернуть фронтенд на Github Pages
-// 8. ТЗ
+import ProductCard from "../../components/ProductCard/ProductCard.tsx";
+import Filter from '../../components/Filter/Filter.tsx';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.tsx';
+import Loader from '../../components/Loader/Loader.tsx';
+
+import { Col, Container, Row } from 'react-bootstrap';
+import "./ProductList.css";
+
+
+export interface Product {
+    pk: number,
+    title: string,
+    file_extension: 'jpg' | 'png',
+    price: number,
+    cnt: number,
+    status: 'A' | 'N',
+    type: 'frames' | 'sunglasses' | 'lenses',
+    param_sex?: string,
+    param_material?: string,
+    param_type?: string,
+    param_color?: string,
+    param_form?: string,
+    param_time?: string,
+    param_brand: string,
+    last_modified: string,
+    image: string
+}
+
+interface Response {
+    orderID: number,
+    products: Product[]
+}
 
 const ProductListPage: FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [prices, setPrices] = useState<Prices>();
-    const [type, setType] = useState<string>('');
+    const [ loading, setLoading ] = useState<boolean> (true)
 
-    const location = useLocation();
-    const request = new URLSearchParams(location.search);
+    const [ response, setResponse ] = useState<Response> ({
+        orderID: -1,
+        products: [],
+    })
 
-    const requestPriceMin = request.get('price_min');
-    const requestPriceMax = request.get('price_max');
-    const requestTitle = request.get('title');
+    const [ searchValue, setSearchValue ] = useState<string> ("")
+    const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> ()
+    const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> ()
+    const [ filterSendCount, setFilterSendCount ] = useState<number> (0)
 
-    const requestType = request.get('type');
-
-    const title = (requestTitle ? requestTitle : '');
+    const getFilteredProducts = async () => {
+        try {
+            const { data } = await axios(`http://127.0.0.1:8080/products/`, {
+                method: "GET",
+                params: {
+                    title: searchValue,
+                    price_min: (Number.isNaN(minPriceValue) ? undefined : minPriceValue),
+                    price_max: (Number.isNaN(maxPriceValue) ? undefined : maxPriceValue)
+                },
+                signal: AbortSignal.timeout(1000)
+            })
+            setResponse(data)
+        } catch (error) {
+            setResponse(getDefaultResponse(3, searchValue, minPriceValue, maxPriceValue))
+        }
+    }
 
     useEffect(() => {
-        requestType && setType(requestType);
-
-        getPrices(type)
-        .then((response) => {
-            const minValueAbsolute = response.price_min;
-            const maxValueAbsolute = (response.price_max == 10000000000 ? 0 : response.price_max);
-            const minValue = (requestPriceMin ? parseInt(requestPriceMin) : minValueAbsolute);
-            const maxValue = (requestPriceMax ? parseInt(requestPriceMax) : maxValueAbsolute);
-            setPrices({
-                priceMin: minValue,
-                priceMax: maxValue,
-                priceMinAbsolute: minValueAbsolute,
-                priceMaxAbsolute: maxValueAbsolute
-            });
-            
-            getProductList(minValue, maxValue, type, title)
-            .then((response) => {
-                setProducts(response);
-            });
+        getFilteredProducts().then(() => {
+            setLoading(false)
+        }).catch((error) => {
+            console.log(error)
+            setLoading(false)
         })
-    }, [type]);
+    }, [filterSendCount])
 
     return (
+        <> {loading ? <Loader /> :
         <Container>
             <Row>
                 <Breadcrumbs pages={[]} />
             </Row>
             <Row style={{ display: "flex" }}>
                 <Col style={{ width: "22%", margin: "30px" }}>
-                    {prices &&
                     <Filter
-                        prices={prices}
-                        title={title}
-                    />}
+                        search={searchValue}
+                        setSearch={setSearchValue}
+                        minPrice={minPriceValue}
+                        setMinPrice={setMinPriceValue}
+                        maxPrice={maxPriceValue}
+                        setMaxPrice={setMaxPriceValue}
+                        send={setFilterSendCount}
+                    />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
                     <div id="box">
-                        {products && products.map((product) => (
+                        {response.products.map((product) => (
                             <ProductCard key={product.pk.toString()}
                                 pk={product.pk}
                                 title={product.title}
                                 price={product.price}
                                 image={product.image}
-                                cnt={product.cnt}/>
+                                cnt={product.cnt}
+                            />
                         ))}
                     </div>
                 </Col>
             </Row>
         </Container>
-    );
+        }</>
+    )
 }
 
-export default ProductListPage
+export default ProductListPage;

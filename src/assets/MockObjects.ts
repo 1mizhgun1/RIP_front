@@ -1,6 +1,7 @@
 import defaultImage from '../assets/default.jpg';
 
-export interface Product {
+
+interface Product {
     pk: number,
     title: string,
     file_extension: 'jpg' | 'png',
@@ -19,7 +20,12 @@ export interface Product {
     image: string
 }
 
-export const defaultProduct = (id: number): Product => {
+interface Response {
+    orderID: number,
+    products: Product[]
+}
+
+const defaultProduct = (id: number): Product => {
     return {
         pk: id,
         title: `Базовые очки ${id}`,
@@ -36,5 +42,23 @@ export const defaultProduct = (id: number): Product => {
         param_brand: "top market",
         last_modified: "today",
         image: defaultImage
+    }
+}
+
+const getDefaultProductList = (count: number, searchValue: string, minPriceValue: number | undefined, maxPriceValue: number | undefined): Product[] => {
+    let result = []
+    for (let i = 1; i <= count; ++i) {
+        result.push(defaultProduct(i))
+    }
+    result = result.filter((product) => {
+        return (!minPriceValue || product.price >= minPriceValue) && (!maxPriceValue || product.price <= maxPriceValue) && (searchValue == '' || product.title.toLowerCase().includes(searchValue.toLowerCase()))
+    })
+    return result
+}
+
+export const getDefaultResponse = (count: number, searchValue: string, minPriceValue: number | undefined, maxPriceValue: number | undefined): Response => {
+    return {
+        orderID: -1,
+        products: getDefaultProductList(count, searchValue, minPriceValue, maxPriceValue)
     }
 }

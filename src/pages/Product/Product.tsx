@@ -1,17 +1,21 @@
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Product, getProduct } from '../../modules/getDataFromAPI'
-import ProductInfo, {Param} from '../../components/ProductInfo/ProductInfo'
+
+import { Product } from '../ProductList/ProductList'
+import ProductInfo, { Param } from '../../components/ProductInfo/ProductInfo'
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import "./Product.css"
+
 import { Container, Row } from 'react-bootstrap';
-import { getBase } from '../../../path_config.ts';
+import "./Product.css"
+
+import axios from "axios";
+
 
 const ProductPage: FC = () => {
     const { id } = useParams();
 
-    const [product, setProduct] = useState<Product>();
-    const [parameters, setParameters] = useState<Param[]>([]);
+    const [ product, setProduct ] = useState<Product>();
+    const [ parameters, setParameters ] = useState<Param[]>([]);
 
     const getParams = (source: Product) => {
         let params: Param[] = []
@@ -25,25 +29,25 @@ const ProductPage: FC = () => {
         return params
     }
 
+    const getProduct = async () => {
+        const { data } = await axios(`http://127.0.0.1:8080/products/${id}/`, {
+                method: "GET",
+            })
+        setProduct(data);
+        setParameters(getParams(data));
+    }
+
     useEffect(() => {
-        id && getProduct(id)
-            .then((response) => {
-                setProduct(response);
-                setParameters(getParams(response));
-            })
-            .then(() => {
-                console.log(product);
-                console.log(parameters);
-            })
+        getProduct()
     }, [id]);
 
     return (
         <Container>
             <Row>
-                {id && product && <Breadcrumbs pages={[ { link: `${getBase()}/products/${id}/`, title: `${product.title}` } ]} />}
+                {product && id && <Breadcrumbs pages={[ { link: `/products/${id}/`, title: `${product.title}` } ]} />}
             </Row>
             <Row>
-                {product && parameters && id && <ProductInfo pk={parseInt(id)} title={product.title} price={product.price} cnt={product.cnt} parameters={parameters} image={product.image} />}
+                {product && id && <ProductInfo pk={parseInt(id)} title={product.title} price={product.price} cnt={product.cnt} parameters={parameters} image={product.image} />}
             </Row>
         </Container>
     )

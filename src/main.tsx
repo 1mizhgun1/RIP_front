@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -15,10 +14,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 const router = createBrowserRouter([
-    // {
-    //     path: '/',
-    //     element: <MainPage />
-    // },
     {
         path: `${getBase()}/`,
         element: <ProductListPage />
@@ -30,15 +25,13 @@ const router = createBrowserRouter([
 ])
   
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <Container>
-            <Row id="header">
-                <HeadTitle />
-                <Navbar />
-            </Row>
-            <Row>
-                <RouterProvider router={router} />
-            </Row>
-        </Container>
-    </React.StrictMode>,
+    <Container>
+        <Row id="header">
+            <HeadTitle />
+            <Navbar />
+        </Row>
+        <Row>
+            <RouterProvider router={router} />
+        </Row>
+    </Container>
 )
