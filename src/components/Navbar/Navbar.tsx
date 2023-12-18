@@ -15,8 +15,6 @@ const Navbar: FC = () => {
     const { is_authenticated, username, auth } = useAuth()
     const { cart, getCart } = useCart()
 
-    const currentUrl = window.location.pathname
-
     const getData = async () => {
         await auth()
         await getCart()
@@ -28,6 +26,10 @@ const Navbar: FC = () => {
         }).catch((error) => {
             console.log(error)
             setLoading(false)
+        }).then(() => {
+            console.log('auth', is_authenticated);
+            console.log('url', window.location.pathname);
+            console.log('cart', cart);
         })
     }, []);
 
@@ -53,12 +55,12 @@ const Navbar: FC = () => {
                         </Col>
                     }   
 
-                    {is_authenticated && currentUrl == '/products' &&
+                    {is_authenticated && window.location.pathname == '/products' &&
                         <Col style={{ width: "50%", marginLeft: "30px" }}>
                             <a className="navbar-button" href="/">Смотреть товары</a>
                         </Col>
                     }
-                    {is_authenticated && currentUrl != '/products' &&
+                    {is_authenticated && window.location.pathname != '/products' &&
                         <Col style={{ width: "65%", marginLeft: "30px" }}>
                             <a className="navbar-button" href="/">Смотреть товары</a>
                         </Col>
@@ -68,7 +70,7 @@ const Navbar: FC = () => {
                             <a className="navbar-button" href="/orders">Мои заказы</a>
                         </Col>
                     }
-                    {is_authenticated && currentUrl == '/products' &&
+                    {is_authenticated && window.location.pathname == '/products' &&
                         <Col style={{ width: "15%", marginLeft: "30px" }}>
                             {cart != undefined ? <a className="navbar-button" href={`/cart`}>Корзина</a> : <a href="#" id="disabled-cart" className="disabled">Корзина</a>}
                         </Col>

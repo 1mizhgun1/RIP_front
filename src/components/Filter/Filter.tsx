@@ -1,19 +1,24 @@
-import { FC } from "react";
+import { FC, Dispatch } from "react";
 
 import { Container, Row, Col } from "react-bootstrap";
 import "./Filter.css";
 
 
-interface FilterProps {
-    searchValue: string,
-    minPriceValue: number | undefined,
-    maxPriceValue: number | undefined
-    setSearchValue: (value: string) => void,
-    setMinPriceValue: (value?: number) => void,
-    setMaxPriceValue: (value?: number) => void
+interface FilterData {
+    search: string,
+    setSearch: Dispatch<string>,
+    minPrice: number | undefined,
+    setMinPrice: Dispatch<number>,
+    maxPrice: number | undefined,
+    setMaxPrice: Dispatch<number>,
+    send: (prevCount: any) => any,
 }
 
-const Filter: FC<FilterProps> = ({ searchValue, minPriceValue, maxPriceValue, setSearchValue, setMinPriceValue, setMaxPriceValue }) => {
+const Filter: FC<FilterData> = ({ search, setSearch, minPrice, setMinPrice, maxPrice, setMaxPrice, send }) => {
+    const handleSend = () => {
+        send((prevCount: any) => prevCount + 1)
+    }
+
     return (
         <Container id="filter">
             <Row><h3 className="filter-title">Фильтр</h3></Row>
@@ -28,8 +33,8 @@ const Filter: FC<FilterProps> = ({ searchValue, minPriceValue, maxPriceValue, se
                                 type="number"
                                 placeholder="мин. цена"
                                 name="price_min"
-                                value={minPriceValue}
-                                onChange={(e) => setMinPriceValue(parseInt(e.target.value))}
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(parseInt(e.target.value))}
                             />
                         </Col>
                         <Col><h4 className="filter-text up">до</h4></Col>
@@ -38,8 +43,8 @@ const Filter: FC<FilterProps> = ({ searchValue, minPriceValue, maxPriceValue, se
                                 type="number"
                                 placeholder="макс. цена"
                                 name="price_max"
-                                value={maxPriceValue}
-                                onChange={(e) => setMaxPriceValue(parseInt(e.target.value))}
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(parseInt(e.target.value))}
                             />
                         </Col>
                     </Row>
@@ -53,11 +58,12 @@ const Filter: FC<FilterProps> = ({ searchValue, minPriceValue, maxPriceValue, se
                             size={30}
                             placeholder="Название"
                             name="title"
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                         />
                     </Row>
                 </Container>
+                <Row><input className="filter-submit" type="button" value="применить" onClick={handleSend}/></Row>
             </form>
         </Container>
     )

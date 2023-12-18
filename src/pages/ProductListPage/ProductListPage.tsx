@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from 'react';
 import { useSsid } from "../../hooks/useSsid.ts";
 import { useCart } from '../../hooks/useCart.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { useProductFilter } from '../../hooks/useProductFilter.ts'
 
 import axios from "axios";
 import { getDefaultResponse } from '../../assets/MockObjects.ts';
@@ -48,10 +47,13 @@ const ProductListPage: FC = () => {
         products: [],
     })
 
-    const { searchValue, minPriceValue, maxPriceValue, setSearchValue, setMinPriceValue, setMaxPriceValue } = useProductFilter()
+    const [ searchValue, setSearchValue ] = useState<string> ("")
+    const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> ()
+    const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> ()
+    const [ filterSendCount, setFilterSendCount ] = useState<number> (0)
 
     const { session_id } = useSsid()
-    const { addToCart } = useCart() 
+    const { addToCart } = useCart()
     const { is_authenticated } = useAuth()
 
     const handleAddToCart = async (product_id: number) => {
@@ -85,7 +87,7 @@ const ProductListPage: FC = () => {
             console.log(error)
             setLoading(false)
         })
-    }, [searchValue, minPriceValue, maxPriceValue])
+    }, [filterSendCount])
 
     return (
         <> {loading ? <Loader /> :
@@ -96,12 +98,13 @@ const ProductListPage: FC = () => {
             <Row style={{ display: "flex" }}>
                 <Col style={{ width: "22%", margin: "30px" }}>
                     <Filter
-                        searchValue={searchValue}
-                        minPriceValue={minPriceValue}
-                        maxPriceValue={maxPriceValue}
-                        setSearchValue={setSearchValue}
-                        setMinPriceValue={setMinPriceValue}
-                        setMaxPriceValue={setMaxPriceValue}
+                        search={searchValue}
+                        setSearch={setSearchValue}
+                        minPrice={minPriceValue}
+                        setMinPrice={setMinPriceValue}
+                        maxPrice={maxPriceValue}
+                        setMaxPrice={setMaxPriceValue}
+                        send={setFilterSendCount}
                     />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
