@@ -8,18 +8,17 @@ import ProductListPage from './pages/ProductList/ProductList'
 import ProductPage from './pages/Product/Product'
 
 import "./main.css"
-import { getBase } from '../path_config.ts';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 const router = createBrowserRouter([
     {
-        path: `${getBase()}/`,
+        path: `/`,
         element: <ProductListPage />
     },
     {
-        path: `${getBase()}/products/:id/`,
+        path: `/products/:id/`,
         element: <ProductPage />
     }
 ])
