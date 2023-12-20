@@ -15,10 +15,6 @@ interface FilterData {
 }
 
 const Filter: FC<FilterData> = ({ search, setSearch, minPrice, setMinPrice, maxPrice, setMaxPrice, send }) => {
-    const handleSend = () => {
-        send((prevCount: any) => prevCount + 1)
-    }
-
     return (
         <Container id="filter">
             <Row><h3 className="filter-title">Фильтр</h3></Row>
@@ -63,7 +59,7 @@ const Filter: FC<FilterData> = ({ search, setSearch, minPrice, setMinPrice, maxP
                         />
                     </Row>
                 </Container>
-                <Row><input className="filter-submit" type="button" value="применить" onClick={handleSend}/></Row>
+                <Row><input className="filter-submit" type="button" value="применить" onClick={send}/></Row>
             </form>
         </Container>
     )

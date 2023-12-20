@@ -47,7 +47,6 @@ const ProductListPage: FC = () => {
     const [ searchValue, setSearchValue ] = useState<string> ("")
     const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> ()
     const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> ()
-    const [ filterSendCount, setFilterSendCount ] = useState<number> (0)
 
     const getFilteredProducts = async () => {
         try {
@@ -73,7 +72,7 @@ const ProductListPage: FC = () => {
             console.log(error)
             setLoading(false)
         })
-    }, [filterSendCount])
+    }, [])
 
     return (
         <> {loading ? <Loader /> :
@@ -90,7 +89,7 @@ const ProductListPage: FC = () => {
                         setMinPrice={setMinPriceValue}
                         maxPrice={maxPriceValue}
                         setMaxPrice={setMaxPriceValue}
-                        send={setFilterSendCount}
+                        send={getFilteredProducts}
                     />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
