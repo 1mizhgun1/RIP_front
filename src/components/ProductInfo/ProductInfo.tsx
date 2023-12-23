@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { useAuth } from "../../hooks/useAuth";
-import { useCart } from '../../hooks/useCart';
+import { useSsid } from '../../hooks/useSsid';
+import axios from "axios";
 
 import './ProductInfo.css'
 
@@ -20,11 +21,16 @@ interface Props {
 }
 
 const ProductInfo: FC<Props> = ({pk, title, price, cnt, parameters, image }) => {
+    const { session_id } = useSsid()
     const { is_authenticated } = useAuth()
-    const { addToCart } = useCart()
 
-    const handleAddToCart = async () => {
-        await addToCart(pk)
+    const addToCart = async (product_id: number) => {
+        await axios(`http://localhost:8080/products/${product_id}/`, {
+            method: "POST",
+            headers: {
+                'authorization': session_id
+            },
+        })
     }
 
     return (
@@ -61,7 +67,7 @@ const ProductInfo: FC<Props> = ({pk, title, price, cnt, parameters, image }) => 
                     <h4 className="product-price-text">Цена:</h4>
                     <h4 className="product-price">{price.toString()+" ₽"}</h4>
                 </div>
-                {cnt != 0 && is_authenticated ? <button className="product-to-cart-green" type="button" onClick={ handleAddToCart }>В корзину</button> : <button className="product-to-cart-grey" type="button">В корзину</button>}
+                {cnt != 0 && is_authenticated ? <button className="product-to-cart-green" type="button" onClick={ () => addToCart(pk) }>В корзину</button> : <button className="product-to-cart-grey" type="button">В корзину</button>}
                 {!is_authenticated  && <h5 className="help-text">Авторизуйтесь, чтобы использовать корзину</h5>}
             </div>
         </div>

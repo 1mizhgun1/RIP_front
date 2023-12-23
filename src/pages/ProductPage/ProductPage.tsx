@@ -50,7 +50,7 @@ const ProductPage: FC = () => {
     return (
         <Container>
             <Row>
-                {product && id && <Breadcrumbs pages={[ { link: `/products/${id}/`, title: `${product.title}` } ]} />}
+                {product && id && <Breadcrumbs pages={[ { link: `/products/${id}`, title: `${product.title}` } ]} />}
             </Row>
             <Row>
                 {product && id && <ProductInfo pk={parseInt(id)} title={product.title} price={product.price} cnt={product.cnt} parameters={parameters} image={product.image} />}

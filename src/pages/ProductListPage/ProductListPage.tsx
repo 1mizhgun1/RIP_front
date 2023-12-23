@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useSsid } from "../../hooks/useSsid.ts";
-import { useCart } from '../../hooks/useCart.ts';
 import { useAuth } from '../../hooks/useAuth.ts';
+import { useProductFilter } from '../../hooks/useProductFilter.ts';
 
 import axios from "axios";
 import { getDefaultResponse } from '../../assets/MockObjects.ts';
@@ -13,6 +13,7 @@ import Loader from '../../components/Loader/Loader.tsx';
 
 import { Col, Container, Row } from 'react-bootstrap';
 import "./ProductListPage.css";
+import CartButton from '../../components/CartButton/CartButton.tsx';
 
 
 export interface Product {
@@ -35,7 +36,7 @@ export interface Product {
 }
 
 interface Response {
-    orderID: number,
+    order: number,
     products: Product[]
 }
 
@@ -43,22 +44,17 @@ const ProductListPage: FC = () => {
     const [ loading, setLoading ] = useState<boolean> (true)
 
     const [ response, setResponse ] = useState<Response> ({
-        orderID: -1,
+        order: -1,
         products: [],
     })
 
-    const [ searchValue, setSearchValue ] = useState<string> ("")
-    const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> ()
-    const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> ()
-    const [ filterSendCount, setFilterSendCount ] = useState<number> (0)
+    const { cache, searchValue, minPriceValue, maxPriceValue, setCache } = useProductFilter()
+    // const [ searchValue, setSearchValue ] = useState<string> (search)
+    // const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> (minPrice)
+    // const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> (maxPrice)
 
     const { session_id } = useSsid()
-    const { addToCart } = useCart()
     const { is_authenticated } = useAuth()
-
-    const handleAddToCart = async (product_id: number) => {
-        await addToCart(product_id)
-    }
 
     const getFilteredProducts = async () => {
         try {
@@ -75,6 +71,15 @@ const ProductListPage: FC = () => {
                 signal: AbortSignal.timeout(1000)
             })
             setResponse(data)
+            setCache(data.products)
+            // setSearchValue(searchValue)
+            // setMinPriceValue(minPriceValue)
+            // setMaxPriceValue(maxPriceValue)
+            // setProductFilter({
+            //     searchValue: searchValue,
+            //     minPriceValue: minPriceValue,
+            //     maxPriceValue: maxPriceValue
+            // })
         } catch (error) {
             setResponse(getDefaultResponse(3, searchValue, minPriceValue, maxPriceValue))
         }
@@ -87,32 +92,37 @@ const ProductListPage: FC = () => {
             console.log(error)
             setLoading(false)
         })
-    }, [filterSendCount])
+    }, [])
+
+    const addToCart = async (product_id: number) => {
+        await axios(`http://localhost:8080/products/${product_id}/`, {
+            method: "POST",
+            headers: {
+                'authorization': session_id
+            },
+        })
+        await getFilteredProducts()
+    }
 
     return (
         <> {loading ? <Loader /> :
         <Container>
-            <Row>
+            {is_authenticated && <CartButton cartID={ response.order } />}
+            <Row style={is_authenticated ? { position: 'relative', top: '-25px' } : {}}>
                 <Breadcrumbs pages={[]} />
             </Row>
-            <Row style={{ display: "flex" }}>
+            <Row style={is_authenticated ? { display: 'flex', position: 'relative', top: '-25px' } : {display: 'flex'}}>
                 <Col style={{ width: "22%", margin: "30px" }}>
                     <Filter
-                        search={searchValue}
-                        setSearch={setSearchValue}
-                        minPrice={minPriceValue}
-                        setMinPrice={setMinPriceValue}
-                        maxPrice={maxPriceValue}
-                        setMaxPrice={setMaxPriceValue}
-                        send={setFilterSendCount}
+                        send={getFilteredProducts}
                     />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
                     <div id="box">
-                        {response.products.map((product) => (
+                        {cache.map((product: Product) => (
                             is_authenticated ?
                             <div>
-                                {product.cnt > 0 ? <button className="main-add-button" onClick={() => {handleAddToCart(product.pk)}}>Добавить в корзину</button> :
+                                {product.cnt > 0 ? <button className="main-add-button" onClick={() => {addToCart(product.pk)}}>Добавить в корзину</button> :
                                 <button className="main-add-button-grey">Добавить в корзину</button>}
                                 <ProductCard key={product.pk.toString()}
                                     pk={product.pk}

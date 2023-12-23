@@ -43,7 +43,7 @@ const LoginPage: FC = () => {
         <> {loading ? <Loader /> :
         <Container>
             <Row>
-                {<Breadcrumbs pages={[ { link: `/login/`, title: "вход" } ]} />}
+                {<Breadcrumbs pages={[ { link: `/login`, title: "вход" } ]} />}
             </Row>
             <Row>
                 <Container style={{ marginLeft: "30px", marginTop: "30px" }}>

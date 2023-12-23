@@ -9,6 +9,7 @@ import FilterOrderStatus from '../../components/FilterOrderStatus/FilterOrderSta
 import Loader from '../../components/Loader/Loader.tsx';
 
 import axios from 'axios';
+import DateFilter from "../../components/DateFilter/DateFilter.tsx";
 
 
 type Filter = {
@@ -38,6 +39,9 @@ const OrderListPage: FC = () => {
         A: true,
         W: true,
     });
+
+    const [ startDate, setStartDate ] = useState<Date | undefined> ()
+    const [ endDate, setEndDate ] = useState<Date | undefined> ()
     
     const handleFilterChange = (newFilter: Filter) => {
         setFilter(newFilter);
@@ -59,13 +63,17 @@ const OrderListPage: FC = () => {
 
     const getOrders = async () => {
         try {
+            console.log(`start_date = ${startDate}`)
+            console.log(`end_date = ${endDate}`)
             const { data } = await axios(`http://127.0.0.1:8080/orders/`, {
                 method: "GET",
                 headers: {
                     'authorization': session_id
                 },
                 params: {
-                    'status': getFilterStatusParams()
+                    'status': getFilterStatusParams(),
+                    'start_date': startDate,
+                    'end_date': endDate,
                 }
             })
             setResponse(data)
@@ -128,7 +136,7 @@ const OrderListPage: FC = () => {
         <> {loading ? <Loader /> :
         <Container>
             <Row>
-                <Breadcrumbs pages={[ { link: `/orders/`, title: `мои заказы` } ]} />
+                <Breadcrumbs pages={[ { link: `/orders`, title: `мои заказы` } ]} />
             </Row>
             <Row style={{ display: "flex" }}>
                 <Col style={{ width: "35%" }}>
@@ -138,6 +146,15 @@ const OrderListPage: FC = () => {
                 <Col style={{ width: "40%" }}>
                     <FilterOrderStatus state={filter} handleFilterChange={handleFilterChange} />
                 </Col>
+            </Row>
+            <Row>
+                <DateFilter
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    send={getOrders}
+                />
             </Row>
             <Row>
                 <OrderTable orders={getTransformedData()}/>

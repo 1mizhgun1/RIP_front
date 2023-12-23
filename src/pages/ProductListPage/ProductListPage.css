@@ -3,6 +3,8 @@
     flex-wrap: wrap;
     height: max-content;
     padding-bottom: 30px;
+    position: relative;
+    top: -35px;
 }
 
 .main-add-button {

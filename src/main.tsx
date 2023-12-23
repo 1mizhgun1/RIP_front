@@ -41,7 +41,6 @@ root.render(
                             <Route path="register/"     element={ <RegisterPage /> } />
                             <Route path="profile/"      element={ <ProfilePage /> } />
                             <Route path="orders/"       element={ <OrderListPage /> } />
-                            <Route path="cart/"         element={ <OrderPage /> } />
                             <Route path="orders/:id"    element={ <OrderPage /> } />
                         </Routes>
                     </Row>

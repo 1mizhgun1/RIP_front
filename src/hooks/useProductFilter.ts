@@ -1,36 +1,41 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSearchValue, updateMinPriceValue, updateMaxPriceValue } from "../store//productFilterSlice";
+import { updateCache, updateSearchValue, updateMinPriceValue, updateMaxPriceValue } from "../store//productFilterSlice";
 
 
 export function useProductFilter() {
     //@ts-ignore
-    const searchValue: string = useSelector(state => state.productFilter.searchValue)
+    const cache = useSelector(state => state.productFilter.cache)
     //@ts-ignore
-    const minPriceValue: number | undefined = useSelector(state => state.productFilter.minPriceValue)
+    const searchValue = useSelector(state => state.productFilter.searchValue)
     //@ts-ignore
-    const maxPriceValue: number | undefined = useSelector(state => state.productFilter.maxPriceValue)
+    const minPriceValue = useSelector(state => state.productFilter.minPriceValue)
+    //@ts-ignore
+    const maxPriceValue = useSelector(state => state.productFilter.maxPriceValue)
 
     const dispatch = useDispatch()
 
+    const setCache = (value: any) => {
+        dispatch(updateCache(value))
+    }
+
     const setSearchValue = (value: any) => {
         dispatch(updateSearchValue(value))
-        console.log(`new search = ${value}`)
     }
 
     const setMinPriceValue = (value: any) => {
         dispatch(updateMinPriceValue(value))
-        console.log(`new min price = ${value}`)
     }
 
     const setMaxPriceValue = (value: any) => {
         dispatch(updateMaxPriceValue(value))
-        console.log(`new max price = ${value}`)
     }
 
     return {
+        cache,
         searchValue,
         minPriceValue,
         maxPriceValue,
+        setCache,
         setSearchValue,
         setMinPriceValue,
         setMaxPriceValue

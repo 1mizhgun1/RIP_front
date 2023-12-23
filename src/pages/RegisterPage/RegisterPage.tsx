@@ -24,7 +24,7 @@ const RegisterPage: FC = () => {
     return (
         <Container>
             <Row>
-                {<Breadcrumbs pages={[ { link: `/register/`, title: "регистрация" } ]} />}
+                {<Breadcrumbs pages={[ { link: `/register`, title: "регистрация" } ]} />}
             </Row>
             <Row>
                 <Container style={{ marginLeft: "30px", marginTop: "30px" }}>

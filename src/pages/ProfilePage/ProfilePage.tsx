@@ -19,7 +19,7 @@ const ProfilePage: FC = () => {
     return (
         <Container>
             <Row>
-                {<Breadcrumbs pages={[ { link: `/profile/`, title: `профиль ${username}` } ]} />}
+                {<Breadcrumbs pages={[ { link: `/profile`, title: `профиль ${username}` } ]} />}
             </Row>
             <Row style={{ marginLeft: "30px", marginTop: "40px" }}>
                 <h1 style={{ fontWeight: "500" }}>{ `Профиль: ${ username }`}</h1>
