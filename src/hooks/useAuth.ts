@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { useSsid } from './useSsid';
 import { updateUser, cleanUser } from "../store/authSlice";
+import { cleanValues } from '../store/productFilterSlice';
 
 
 export function useAuth() {
@@ -19,6 +20,10 @@ export function useAuth() {
         dispatch(cleanUser())
     }
 
+    const resetValues = () => {
+        dispatch(cleanValues())
+    }
+
     const logout = async () => {
         try {
             const response = await axios(`http://localhost:8080/accounts/logout/`, {
@@ -31,6 +36,7 @@ export function useAuth() {
             if (response.status == 200) {
                 resetSsid()
                 resetUser()
+                resetValues()
             }
         } catch (error) {
             console.log("Что-то пошло не так")

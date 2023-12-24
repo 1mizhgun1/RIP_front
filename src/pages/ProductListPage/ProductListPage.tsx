@@ -1,7 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { useSsid } from "../../hooks/useSsid.ts";
 import { useAuth } from '../../hooks/useAuth.ts';
-import { useProductFilter } from '../../hooks/useProductFilter.ts';
 
 import axios from "axios";
 import { getDefaultResponse } from '../../assets/MockObjects.ts';
@@ -10,10 +9,13 @@ import ProductCard from "../../components/ProductCard/ProductCard.tsx";
 import Filter from '../../components/Filter/Filter.tsx';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.tsx';
 import Loader from '../../components/Loader/Loader.tsx';
+import CartButton from '../../components/CartButton/CartButton.tsx';
 
 import { Col, Container, Row } from 'react-bootstrap';
 import "./ProductListPage.css";
-import CartButton from '../../components/CartButton/CartButton.tsx';
+
+import { useDispatch, useStore } from 'react-redux';
+import { updateMaxPriceValue, updateMinPriceValue, updateSearchValue } from '../../store/productFilterSlice.ts';
 
 
 export interface Product {
@@ -48,13 +50,20 @@ const ProductListPage: FC = () => {
         products: [],
     })
 
-    const { cache, searchValue, minPriceValue, maxPriceValue, setCache } = useProductFilter()
-    // const [ searchValue, setSearchValue ] = useState<string> (search)
-    // const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> (minPrice)
-    // const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> (maxPrice)
+    // const searchValue = useSelector((state: any) => state.productFilter.searchValue);
+    // const minPriceValue = useSelector((state: any) => state.productFilter.minPriceValue);
+    // const maxPriceValue = useSelector((state: any) => state.productFilter.maxPriceValue);
+
+    //@ts-ignore
+    const [ searchValue, setSearchValue ] = useState<string> (useStore().getState().productFilter.searchValue)
+    //@ts-ignore
+    const [ minPriceValue, setMinPriceValue ] = useState<number | undefined> (useStore().getState().productFilter.minPriceValue)
+    //@ts-ignore
+    const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> (useStore().getState().productFilter.maxPriceValue)
 
     const { session_id } = useSsid()
     const { is_authenticated } = useAuth()
+    const dispatch = useDispatch()
 
     const getFilteredProducts = async () => {
         try {
@@ -71,15 +80,9 @@ const ProductListPage: FC = () => {
                 signal: AbortSignal.timeout(1000)
             })
             setResponse(data)
-            setCache(data.products)
-            // setSearchValue(searchValue)
-            // setMinPriceValue(minPriceValue)
-            // setMaxPriceValue(maxPriceValue)
-            // setProductFilter({
-            //     searchValue: searchValue,
-            //     minPriceValue: minPriceValue,
-            //     maxPriceValue: maxPriceValue
-            // })
+            dispatch(updateSearchValue(searchValue))
+            dispatch(updateMinPriceValue(minPriceValue))
+            dispatch(updateMaxPriceValue(maxPriceValue))
         } catch (error) {
             setResponse(getDefaultResponse(3, searchValue, minPriceValue, maxPriceValue))
         }
@@ -92,7 +95,7 @@ const ProductListPage: FC = () => {
             console.log(error)
             setLoading(false)
         })
-    }, [])
+    }, [dispatch])
 
     const addToCart = async (product_id: number) => {
         await axios(`http://localhost:8080/products/${product_id}/`, {
@@ -114,12 +117,18 @@ const ProductListPage: FC = () => {
             <Row style={is_authenticated ? { display: 'flex', position: 'relative', top: '-25px' } : {display: 'flex'}}>
                 <Col style={{ width: "22%", margin: "30px" }}>
                     <Filter
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        minPriceValue={minPriceValue}
+                        setMinPriceValue={setMinPriceValue}
+                        maxPriceValue={maxPriceValue}
+                        setMaxPriceValue={setMaxPriceValue}
                         send={getFilteredProducts}
                     />
                 </Col>
                 <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
                     <div id="box">
-                        {cache.map((product: Product) => (
+                        {response.products.map((product: Product) => (
                             is_authenticated ?
                             <div>
                                 {product.cnt > 0 ? <button className="main-add-button" onClick={() => {addToCart(product.pk)}}>Добавить в корзину</button> :

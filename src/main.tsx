@@ -13,10 +13,14 @@ import OrderPage from "./pages/OrderPage/OrderPage.tsx";
 
 import Navbar from "./components/Navbar/Navbar.tsx";
 
-import store from "./store/store.ts";
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from "./store/store.ts";
+
+// import store from "./store/store.ts";
 
 import { Container, Row } from "react-bootstrap";
 import "./main.css";
+import ProductUpdatePage from "./pages/ProductUpdatePage/ProductUpdatePage.tsx";
 
 
 const root = ReactDOM.createRoot(
@@ -28,24 +32,27 @@ const queryClient = new QueryClient();
 root.render(
     <QueryClientProvider client={ queryClient }>
         <Provider store={ store }>
-            <BrowserRouter>
-                <Container>
-                    <Navbar />
-                    <Row>
-                        {/* <Breadcrumbs /> */}
-                        <Routes>
-                            <Route path="/"             element={ <Navigate to="/products" replace /> } />
-                            <Route path="products/"     element={ <ProductListPage /> } />
-                            <Route path="products/:id"  element={ <ProductPage /> } />
-                            <Route path="login/"        element={ <LoginPage /> } />
-                            <Route path="register/"     element={ <RegisterPage /> } />
-                            <Route path="profile/"      element={ <ProfilePage /> } />
-                            <Route path="orders/"       element={ <OrderListPage /> } />
-                            <Route path="orders/:id"    element={ <OrderPage /> } />
-                        </Routes>
-                    </Row>
-                </Container>
-            </BrowserRouter>
+            <PersistGate loading={null} persistor={persistor}>
+                <BrowserRouter>
+                    <Container>
+                        <Navbar />
+                        <Row>
+                            <Routes>
+                                <Route path="/"             element={ <Navigate to="/products" replace /> } />
+                                <Route path="products/"     element={ <ProductListPage /> } />
+                                <Route path="products/:id"  element={ <ProductPage /> } />
+                                <Route path="login/"        element={ <LoginPage /> } />
+                                <Route path="register/"     element={ <RegisterPage /> } />
+                                <Route path="profile/"      element={ <ProfilePage /> } />
+                                <Route path="orders/"       element={ <OrderListPage /> } />
+                                <Route path="orders/:id"    element={ <OrderPage /> } />
+                                <Route path="products/:id/update/"  element={ <ProductUpdatePage /> } />
+                                <Route path="products/create/"      element={ <ProductUpdatePage /> } />
+                            </Routes>
+                        </Row>
+                    </Container>
+                </BrowserRouter>
+            </PersistGate>
         </Provider>
     </QueryClientProvider>
 );
