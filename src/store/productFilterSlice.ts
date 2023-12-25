@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-
 interface Filter {
     searchValue: string,
     minPriceValue: number | undefined,

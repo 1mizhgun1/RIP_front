@@ -1,19 +1,9 @@
-// import { configureStore } from "@reduxjs/toolkit"
-// import authReducer from "./authSlice"
-// import productFilterReducer from "./productFilterSlice"
-
-// export default configureStore({
-//     reducer: {
-//         user: authReducer,
-//         productFilter: productFilterReducer,
-//     }
-// })
-
 import { configureStore } from "@reduxjs/toolkit"
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist'
 import authReducer from "./authSlice"
 import productFilterReducer from "./productFilterSlice"
-import storage from 'redux-persist/lib/storage';
+import orderFilterReducer from "./orderFilterSlice"
+import storage from 'redux-persist/lib/storage'
 import { combineReducers } from 'redux'
 
 const persistConfig = {
@@ -23,7 +13,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     user: authReducer,
-    productFilter: productFilterReducer
+    productFilter: productFilterReducer,
+    orderFilter: orderFilterReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

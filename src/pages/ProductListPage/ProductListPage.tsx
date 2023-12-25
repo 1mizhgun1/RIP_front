@@ -16,6 +16,7 @@ import "./ProductListPage.css";
 
 import { useDispatch, useStore } from 'react-redux';
 import { updateMaxPriceValue, updateMinPriceValue, updateSearchValue } from '../../store/productFilterSlice.ts';
+import { useNavigate } from 'react-router-dom';
 
 
 export interface Product {
@@ -50,10 +51,6 @@ const ProductListPage: FC = () => {
         products: [],
     })
 
-    // const searchValue = useSelector((state: any) => state.productFilter.searchValue);
-    // const minPriceValue = useSelector((state: any) => state.productFilter.minPriceValue);
-    // const maxPriceValue = useSelector((state: any) => state.productFilter.maxPriceValue);
-
     //@ts-ignore
     const [ searchValue, setSearchValue ] = useState<string> (useStore().getState().productFilter.searchValue)
     //@ts-ignore
@@ -62,12 +59,15 @@ const ProductListPage: FC = () => {
     const [ maxPriceValue, setMaxPriceValue ] = useState<number | undefined> (useStore().getState().productFilter.maxPriceValue)
 
     const { session_id } = useSsid()
-    const { is_authenticated } = useAuth()
+    const { is_authenticated, is_moderator } = useAuth()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    is_moderator && navigate('/')
 
     const getFilteredProducts = async () => {
         try {
-            const { data } = await axios(`http://127.0.0.1:8080/products/`, {
+            const { data } = await axios(`http://127.0.0.1:8080/products/?status=A`, {
                 method: "GET",
                 headers: {
                     'authorization': session_id
@@ -115,7 +115,7 @@ const ProductListPage: FC = () => {
                 <Breadcrumbs pages={[]} />
             </Row>
             <Row style={is_authenticated ? { display: 'flex', position: 'relative', top: '-25px' } : {display: 'flex'}}>
-                <Col style={{ width: "22%", margin: "30px" }}>
+                <Col style={{ width: "22%", marginTop: "30px", marginLeft: "30px" }}>
                     <Filter
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
@@ -126,11 +126,11 @@ const ProductListPage: FC = () => {
                         send={getFilteredProducts}
                     />
                 </Col>
-                <Col style={{ marginBottom: "30px", marginLeft: "10px" }}>
+                <Col style={{ marginBottom: "30px", marginLeft: "10px", marginTop: (is_authenticated ? "0px" : "36px") }}>
                     <div id="box">
-                        {response.products.map((product: Product) => (
+                        {response.products.map((product: Product, index) => (
                             is_authenticated ?
-                            <div>
+                            <div key={index}>
                                 {product.cnt > 0 ? <button className="main-add-button" onClick={() => {addToCart(product.pk)}}>Добавить в корзину</button> :
                                 <button className="main-add-button-grey">Добавить в корзину</button>}
                                 <ProductCard key={product.pk.toString()}
@@ -141,7 +141,7 @@ const ProductListPage: FC = () => {
                                     cnt={product.cnt}
                                 />
                             </div> :
-                            <ProductCard key={product.pk.toString()}
+                            <ProductCard key={index}
                                 pk={product.pk}
                                 title={product.title}
                                 price={product.price}
